@@ -87,8 +87,8 @@ P.S. You can delete this when you're done too. It's your config now! :)
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
-vim.g.mapleader = ' '
-vim.g.maplocalleader = ' '
+vim.g.mapleader = ','
+vim.g.maplocalleader = ','
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = false
@@ -230,6 +230,19 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
+  -- Run tests of various sorts
+  {
+    'vim-test/vim-test',
+    config = function()
+      vim.api.nvim_set_keymap('n', '<Leader>t', ':TestFile<CR>', { noremap = true, silent = true })
+      vim.api.nvim_set_keymap('n', '<Leader>s', ':TestNearest<CR>', { noremap = true, silent = true })
+      vim.api.nvim_set_keymap('n', '<Leader>l', ':TestLast<CR>', { noremap = true, silent = true })
+      vim.api.nvim_set_keymap('n', '<Leader>a', ':TestSuite<CR>', { noremap = true, silent = true })
+      vim.api.nvim_set_keymap('n', '<Leader>v', ':TestVisit<CR>', { noremap = true, silent = true })
+
+      vim.g['test#strategy '] = 'neovim'
+    end,
+  },
 
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
