@@ -245,6 +245,9 @@ require('lazy').setup({
       vim.api.nvim_set_keymap('n', '<Leader>v', ':TestVisit<CR>', { noremap = true, silent = true })
 
       vim.g['test#strategy '] = 'neovim'
+      if vim.fn.getcwd():match 'instrumentl' then
+        vim.g['test#ruby#rspec#executable'] = 'docker compose -f docker-compose-with-fs.yaml exec api bundle exec rspec'
+      end
     end,
   },
 
