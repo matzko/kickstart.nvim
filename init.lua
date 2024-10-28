@@ -234,6 +234,18 @@ require('lazy').setup({
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   'tpope/vim-endwise',
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
+  {
+    'mhinz/vim-grepper',
+    keys = {
+      { 'gs', '<plug>(GrepperOperator)', mode = { 'n', 'x' }, desc = 'Grepper operator' },
+    },
+    config = function()
+      vim.g.grepper = {
+        highlight = 1,
+        tools = { 'rg', 'git', 'grep' },
+      }
+    end,
+  },
   -- Run tests of various sorts
   {
     'vim-test/vim-test',
