@@ -246,6 +246,23 @@ require('lazy').setup({
       }
     end,
   },
+  {
+    'nvim-tree/nvim-tree.lua',
+    keys = {
+      { '<leader>w', '<cmd>NvimTreeToggle<cr>', desc = 'Toggle NvimTree' },
+    },
+    config = function()
+      -- disable netrw at the very start of your init.lua
+      vim.g.loaded_netrw = 1
+      vim.g.loaded_netrwPlugin = 1
+
+      -- optionally enable 24-bit colour
+      vim.opt.termguicolors = true
+
+      -- empty setup using defaults
+      require('nvim-tree').setup()
+    end,
+  },
   -- Run tests of various sorts
   {
     'vim-test/vim-test',
