@@ -249,6 +249,7 @@ require('lazy').setup({
       virtual_text_column = 1, -- virtual text start column, check Start virtual text at column section for more options
     },
   },
+  'github/copilot.vim',
   'tpope/vim-endwise',
   'tpope/vim-fugitive',
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
