@@ -332,7 +332,8 @@ require('lazy').setup({
 
       vim.g['test#strategy '] = 'neovim'
       if vim.fn.getcwd():match 'instrumentl' then
-        vim.g['test#ruby#rspec#executable'] = 'docker compose -f docker-compose-with-fs.yaml exec api bundle exec rspec'
+        -- vim.g['test#ruby#rspec#executable'] = 'docker compose -f docker-compose-with-fs.yaml exec api bundle exec rspec'
+        vim.g['test#ruby#rspec#executable'] = 'just api_rspec'
       end
     end,
   },
@@ -751,6 +752,11 @@ require('lazy').setup({
             },
           },
         },
+
+        ruby_lsp = {
+          mason = false,
+          cmd = { vim.fn.expand '~/.asdf/shims/ruby-lsp' },
+        },
       }
 
       -- Ensure the servers and tools above are installed
@@ -799,6 +805,25 @@ require('lazy').setup({
       },
     },
     opts = {
+      formatters = {
+        mix = {
+          -- If you need custom args for mix format
+          args = { 'format', '-' },
+        },
+        -- rubocop = {
+        --   command = 'rubocop',
+        --   args = {
+        --     '--config',
+        --     vim.fn.expand '~/.rubocop.yml',
+        --     '--auto-correct',
+        --     '--stdin',
+        --     '$FILENAME',
+        --     '--format',
+        --     'quiet',
+        --     '--stderr',
+        --   },
+        -- },
+      },
       notify_on_error = false,
       format_on_save = function(bufnr)
         -- Disable "format_on_save lsp_fallback" for languages that don't
@@ -817,6 +842,7 @@ require('lazy').setup({
         }
       end,
       formatters_by_ft = {
+        elixir = { 'mix' },
         lua = { 'stylua' },
         ruby = { 'rubocop' },
         -- Conform can also run multiple formatters sequentially
