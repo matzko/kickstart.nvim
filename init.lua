@@ -977,6 +977,7 @@ require('lazy').setup({
       end,
       formatters_by_ft = {
         elixir = { 'mix' },
+        java = { 'google-java-format' },
         lua = { 'stylua' },
         ruby = { 'rubocop' },
         -- Conform can also run multiple formatters sequentially
