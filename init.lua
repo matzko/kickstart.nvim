@@ -252,6 +252,29 @@ require('lazy').setup({
   'gcmt/taboo.vim',
   'github/copilot.vim',
   {
+    'olimorris/codecompanion.nvim',
+    opts = {},
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-treesitter/nvim-treesitter',
+    },
+  },
+  -- used in codecompanion
+  {
+    'MeanderingProgrammer/render-markdown.nvim',
+    ft = { 'markdown', 'codecompanion' },
+  },
+  {
+    'echasnovski/mini.diff',
+    config = function()
+      local diff = require 'mini.diff'
+      diff.setup {
+        -- Disabled by default
+        source = diff.gen_source.none(),
+      }
+    end,
+  },
+  {
     'kevinhwang91/nvim-ufo',
     dependencies = { 'kevinhwang91/promise-async' },
     config = function()
