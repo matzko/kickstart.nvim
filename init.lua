@@ -780,6 +780,38 @@ require('lazy').setup({
           mason = false,
           cmd = { vim.fn.expand '~/.asdf/shims/ruby-lsp' },
         },
+
+        -- Add Elm Language Server
+        elmls = {
+          -- The language server will automatically find elm.json in parent directories
+          filetypes = { 'elm' },
+          settings = {
+            elmLS = {
+              -- Enable/disable features
+              elmPath = 'elm', -- Path to elm binary
+              elmFormatPath = 'elm-format', -- Path to elm-format binary
+              elmTestPath = 'elm-test', -- Path to elm-test binary
+
+              -- Disable elm-format in the language server since elm-vim handles it
+              disableElmLSDiagnostics = false,
+              onlyUpdateDiagnosticsOnSave = false,
+
+              -- Skip confirmation for code actions
+              skipInstallPackageConfirmation = false,
+
+              -- Enable trace for debugging (set to "verbose" if you need more details)
+              trace = {
+                server = 'off', -- "off" | "messages" | "verbose"
+              },
+            },
+          },
+
+          -- Ensure it starts from the correct directory (where elm.json is)
+          root_dir = function(fname)
+            local util = require 'lspconfig.util'
+            return util.root_pattern 'elm.json'(fname) or util.path.dirname(fname)
+          end,
+        },
       }
 
       -- Ensure the servers and tools above are installed
@@ -813,6 +845,35 @@ require('lazy').setup({
     end,
   },
 
+  -- {
+  --   'ElmCast/elm-vim',
+  --   ft = 'elm', -- Only load for Elm files
+  --   config = function()
+  --     -- Enable elm-format on save
+  --     vim.g.elm_format_autosave = 1
+  --
+  --     -- Set elm-format options
+  --     vim.g.elm_format_fail_silently = 1
+  --
+  --     -- Specify the elm-format command path
+  --     vim.g.elm_format_command = 'elm-format'
+  --
+  --     -- Set working directory for elm-format to find elm.json
+  --     vim.g.elm_setup_keybindings = 0 -- Disable default keybindings to avoid conflicts
+  --
+  --     -- If you want to specify a custom elm-format command
+  --     -- vim.g.elm_format_command = 'elm-format'
+  --
+  --     -- You can also set other elm-vim options here:
+  --     -- vim.g.elm_jump_to_error = 0
+  --     -- vim.g.elm_make_output_file = 'elm.js'
+  --     -- vim.g.elm_make_show_warnings = 0
+  --     -- vim.g.elm_syntastic_show_warnings = 0
+  --     -- vim.g.elm_browser_command = ''
+  --     -- vim.g.elm_detailed_complete = 0
+  --   end,
+  -- },
+
   { -- Autoformat
     'stevearc/conform.nvim',
     event = { 'BufWritePre' },
@@ -833,6 +894,40 @@ require('lazy').setup({
           -- If you need custom args for mix format
           args = { 'format', '-' },
         },
+        ['elm-format'] = {
+          command = 'elm-format',
+          args = { '--stdin' },
+          stdin = true,
+          -- Set working directory to where elm.json is located
+          cwd = function(self, ctx)
+            -- Look for elm.json starting from the file's directory
+            local elm_root = vim.fs.find('elm.json', {
+              path = ctx.filename,
+              upward = true,
+            })[1]
+            if elm_root then
+              return vim.fn.fnamemodify(elm_root, ':h')
+            end
+            return nil
+          end,
+          -- Only format if the file has valid Elm syntax
+          condition = function(self, ctx)
+            -- Check if we can find elm.json
+            local elm_root = vim.fs.find('elm.json', {
+              path = ctx.filename,
+              upward = true,
+            })[1]
+            return elm_root ~= nil
+          end,
+        },
+        -- ['elm-format'] = {
+        --   command = 'npm',
+        --   args = { 'run', '--silent', 'elm-format' },
+        -- },
+        -- ['elm-format'] = {
+        --   command = 'npm',
+        --   args = { 'run', '--silent', 'elm-format' },
+        -- },
         -- rubocop = {
         --   command = 'rubocop',
         --   args = {
@@ -866,6 +961,7 @@ require('lazy').setup({
       end,
       formatters_by_ft = {
         elixir = { 'mix' },
+        elm = { 'elm-format' },
         java = { 'google-java-format' },
         lua = { 'stylua' },
         ruby = { 'rubocop' },
