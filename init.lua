@@ -317,6 +317,7 @@ require('lazy').setup({
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
   {
     'mhinz/vim-grepper',
+    cmd = { 'Grepper', 'GrepperRg', 'GrepperGit', 'GrepperGrep' },
     keys = {
       { 'gs', '<plug>(GrepperOperator)', mode = { 'n', 'x' }, desc = 'Grepper operator' },
     },
