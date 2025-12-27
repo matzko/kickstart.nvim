@@ -1165,12 +1165,49 @@ require('lazy').setup({
     ---@type overseer.SetupOpts
     opts = {},
     keys = {
-      { '<leader>or', '<cmd>OverseerRun<cr>', desc = '[O]verseer [R]un task' },
-      { '<leader>ot', '<cmd>OverseerToggle<cr>', desc = '[O]verseer [T]oggle window' },
-      { '<leader>oa', '<cmd>OverseerTaskAction<cr>', desc = '[O]verseer Task [A]ction' },
-      { '<leader>oq', '<cmd>OverseerQuickAction<cr>', desc = '[O]verseer [Q]uick action' },
-      { '<leader>oi', '<cmd>OverseerInfo<cr>', desc = '[O]verseer [I]nfo' },
+      { '<leader>jr', '<cmd>OverseerRun<cr>', desc = '[J]ob [R]un task' },
+      { '<leader>jt', '<cmd>OverseerToggle<cr>', desc = '[J]ob [T]oggle window' },
+      { '<leader>ja', '<cmd>OverseerTaskAction<cr>', desc = '[J]ob Task [A]ction' },
+      { '<leader>jq', '<cmd>OverseerQuickAction<cr>', desc = '[J]ob [Q]uick action' },
+      { '<leader>ji', '<cmd>OverseerInfo<cr>', desc = '[J]ob [I]nfo' },
     },
+  },
+  {
+    'NickvanDyke/opencode.nvim',
+    dependencies = {
+      { 'folke/snacks.nvim', opts = { input = {}, picker = {}, terminal = {} } },
+    },
+    config = function()
+      vim.g.opencode_opts = {}
+      vim.o.autoread = true
+
+      -- Main OpenCode commands
+      vim.keymap.set({ 'n', 'x' }, '<leader>oa', function()
+        require('opencode').ask('@this: ', { submit = true })
+      end, { desc = '[O]pencode [A]sk' })
+      vim.keymap.set({ 'n', 'x' }, '<leader>ox', function()
+        require('opencode').select()
+      end, { desc = '[O]pencode e[X]ecute' })
+      vim.keymap.set({ 'n', 't' }, '<leader>ot', function()
+        require('opencode').toggle()
+      end, { desc = '[O]pencode [T]oggle' })
+
+      -- Operator mappings
+      vim.keymap.set({ 'n', 'x' }, 'go', function()
+        return require('opencode').operator '@this '
+      end, { expr = true, desc = 'Add range to opencode' })
+      vim.keymap.set('n', 'goo', function()
+        return require('opencode').operator '@this ' .. '_'
+      end, { expr = true, desc = 'Add line to opencode' })
+
+      -- Scroll within opencode session
+      vim.keymap.set('n', '<S-C-u>', function()
+        require('opencode').command 'session.half.page.up'
+      end, { desc = 'opencode half page up' })
+      vim.keymap.set('n', '<S-C-d>', function()
+        require('opencode').command 'session.half.page.down'
+      end, { desc = 'opencode half page down' })
+    end,
   },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
