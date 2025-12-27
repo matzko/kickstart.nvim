@@ -1156,6 +1156,19 @@ require('lazy').setup({
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,
   },
+  { -- Run code/tasks within Neovim
+    'stevearc/overseer.nvim',
+    ---@module 'overseer'
+    ---@type overseer.SetupOpts
+    opts = {},
+    keys = {
+      { '<leader>or', '<cmd>OverseerRun<cr>', desc = '[O]verseer [R]un task' },
+      { '<leader>ot', '<cmd>OverseerToggle<cr>', desc = '[O]verseer [T]oggle window' },
+      { '<leader>oa', '<cmd>OverseerTaskAction<cr>', desc = '[O]verseer Task [A]ction' },
+      { '<leader>oq', '<cmd>OverseerQuickAction<cr>', desc = '[O]verseer [Q]uick action' },
+      { '<leader>oi', '<cmd>OverseerInfo<cr>', desc = '[O]verseer [I]nfo' },
+    },
+  },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
