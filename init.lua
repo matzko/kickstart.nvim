@@ -370,7 +370,8 @@ require('lazy').setup({
       vim.g['test#strategy '] = 'neovim'
       if vim.fn.getcwd():match 'instrumentl' then
         -- vim.g['test#ruby#rspec#executable'] = 'docker compose -f docker-compose-with-fs.yaml exec api bundle exec rspec'
-        vim.g['test#ruby#rspec#executable'] = 'just api_rspec'
+        -- vim.g['test#ruby#rspec#executable'] = 'just api_rspec'
+        vim.g['test#ruby#rspec#executable'] = '~/bin/test_runner'
       end
     end,
   },
