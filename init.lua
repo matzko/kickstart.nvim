@@ -286,6 +286,7 @@ require('lazy').setup({
   --     }
   --   end,
   -- },
+  'sindrets/diffview.nvim',
   {
     'esmuellert/codediff.nvim',
     dependencies = { 'MunifTanjim/nui.nvim' },
