@@ -286,7 +286,11 @@ require('lazy').setup({
   --     }
   --   end,
   -- },
-  'sindrets/diffview.nvim',
+  {
+    'esmuellert/codediff.nvim',
+    dependencies = { 'MunifTanjim/nui.nvim' },
+    cmd = 'CodeDiff',
+  },
   {
     'kevinhwang91/nvim-ufo',
     dependencies = { 'kevinhwang91/promise-async' },
