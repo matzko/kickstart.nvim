@@ -1191,7 +1191,11 @@ require('lazy').setup({
       { 'folke/snacks.nvim', opts = { input = {}, picker = {}, terminal = {} } },
     },
     config = function()
-      vim.g.opencode_opts = {}
+      vim.g.opencode_opts = {
+        provider = {
+          enabled = 'terminal',
+        },
+      }
       vim.o.autoread = true
 
       -- Main OpenCode commands
@@ -1214,10 +1218,10 @@ require('lazy').setup({
       end, { expr = true, desc = 'Add line to opencode' })
 
       -- Scroll within opencode session
-      vim.keymap.set('n', '<S-C-u>', function()
+      vim.keymap.set('n', '<leader>ok', function()
         require('opencode').command 'session.half.page.up'
       end, { desc = 'opencode half page up' })
-      vim.keymap.set('n', '<S-C-d>', function()
+      vim.keymap.set('n', '<leader>oj', function()
         require('opencode').command 'session.half.page.down'
       end, { desc = 'opencode half page down' })
     end,
