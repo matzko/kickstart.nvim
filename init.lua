@@ -802,6 +802,18 @@ require('lazy').setup({
           },
         },
 
+        elixirls = {
+          settings = {
+            elixirLS = {
+              dialyzerEnabled = true,
+              dialyzerFormat = 'dialyxir_short',
+              fetchDeps = false,
+              enableTestLenses = true,
+              suggestSpecs = true,
+            },
+          },
+        },
+
         ruby_lsp = {
           mason = false,
           cmd = { vim.fn.expand '~/.asdf/shims/ruby-lsp' },
