@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# PATH shim placed in front of the real `bundle` for the ruby-lsp process only.
+#
+# ruby-lsp-rails boots its Rails runner with
+#   bundle exec rails runner <gem>/ruby_lsp/ruby_lsp_rails/server.rb start <caps>
+# on the host, where the app can't boot (databases live in docker compose).
+# Redirect that one invocation into the compose `api` service, mounting the
+# repo at its host path so the paths Rails reports back match local files.
+# Everything else falls through to the real bundle.
+
+set -euo pipefail
+
+real_bundle="$HOME/.asdf/shims/bundle"
+
+if [[ $# -ge 4 && $1 == exec && $2 == rails && $3 == runner && $4 == */ruby_lsp/ruby_lsp_rails/server.rb ]]; then
+  shift 4
+  compose_file="${COMPOSE_FILE:-docker-compose-with-fs.yaml}"
+  if [[ ! -f $compose_file ]]; then
+    echo "ruby-lsp-docker-shim: no $compose_file in $PWD, falling back to host rails" >&2
+    exec "$real_bundle" exec rails runner "$@"
+  fi
+
+  exec docker compose -f "$compose_file" run --rm -T --no-deps \
+    -v "$PWD:$PWD" -w "$PWD" api \
+    sh -c 'exec bundle exec rails runner "$(bundle show ruby-lsp-rails)/lib/ruby_lsp/ruby_lsp_rails/server.rb" "$@"' -- "$@"
+fi
+
+exec "$real_bundle" "$@"

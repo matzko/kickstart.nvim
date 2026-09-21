@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Launches the asdf-managed ruby-lsp without going through `asdf exec`, which
+# would prepend the Ruby bin dir (and its real `bundle`) ahead of the `bundle`
+# shim that lives next to this script.
+
+set -euo pipefail
+
+here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+real_ruby_lsp="$(asdf which ruby-lsp)"
+ruby_bin="$(dirname "$real_ruby_lsp")"
+
+export PATH="$here:$ruby_bin:$PATH"
+exec "$real_ruby_lsp" "$@"

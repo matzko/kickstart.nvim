@@ -816,7 +816,9 @@ require('lazy').setup({
 
         ruby_lsp = {
           mason = false,
-          cmd = { vim.fn.expand '~/.asdf/shims/ruby-lsp' },
+          -- Launcher that routes ruby-lsp-rails' `bundle exec rails runner` into
+          -- docker compose; see the scripts in that directory for details.
+          cmd = { vim.fn.expand '~/.config/nvim/bin/ruby-lsp-docker-shim/ruby-lsp' },
         },
 
         -- Ruby LSP defers constant navigation in Sorbet projects to Sorbet's own LSP.
