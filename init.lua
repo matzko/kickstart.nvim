@@ -819,6 +819,14 @@ require('lazy').setup({
           cmd = { vim.fn.expand '~/.asdf/shims/ruby-lsp' },
         },
 
+        -- Ruby LSP defers constant navigation in Sorbet projects to Sorbet's own LSP.
+        sorbet = {
+          mason = false,
+          -- Drop --disable-watchman after `brew install watchman` to pick up
+          -- file changes made outside Neovim (git checkout, generators).
+          cmd = { vim.fn.expand '~/.asdf/shims/srb', 'tc', '--lsp', '--disable-watchman' },
+        },
+
         -- Add Elm Language Server
         elmls = {
           -- The language server will automatically find elm.json in parent directories
@@ -862,24 +870,33 @@ require('lazy').setup({
 
       -- You can add other tools here that you want Mason to install
       -- for you, so that they are available from within Neovim.
-      local ensure_installed = vim.tbl_keys(servers or {})
+      -- Servers with `mason = false` are provided outside Mason (e.g. via asdf)
+      -- and are enabled explicitly below.
+      local mason_servers = {}
+      local external_servers = {}
+      for name, server in pairs(servers) do
+        if server.mason == false then
+          table.insert(external_servers, name)
+        else
+          table.insert(mason_servers, name)
+        end
+        server.mason = nil
+        server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
+        vim.lsp.config(name, server)
+      end
+
+      local ensure_installed = vim.deepcopy(mason_servers)
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
+      -- mason-lspconfig v2 auto-enables every server installed in Mason.
       require('mason-lspconfig').setup {
-        handlers = {
-          function(server_name)
-            local server = servers[server_name] or {}
-            -- This handles overriding only values explicitly passed
-            -- by the server configuration above. Useful when disabling
-            -- certain features of an LSP (for example, turning off formatting for ts_ls)
-            server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-            require('lspconfig')[server_name].setup(server)
-          end,
-        },
+        automatic_enable = { exclude = { 'solargraph' } },
       }
+
+      vim.lsp.enable(external_servers)
     end,
   },
 
